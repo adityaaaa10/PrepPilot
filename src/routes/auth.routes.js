@@ -1,7 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/auth.controller');
-
 const authRoutes = express.Router();
+const { authenticateToken } = require('../Middlewares/auth.middleware');
 
 /**
  * @route POST /api/auth/register
@@ -17,5 +17,19 @@ authRoutes.post('/register', userController.registerUser);
  */
 authRoutes.post('/login', userController.loginUser);
 
+/**
+ * @name blacklistToken
+ * @description clear the token from the cookie and add it to the blacklist
+ * @access Public
+ */
+authRoutes.get('/logout', userController.blacklistToken);
+
+
+/**
+ * @route GET /api/auth/get-me
+ * @desc get the current logged in user details
+ * @access Public
+ */
+authRoutes.get('/get-me', authenticateToken, userController.getMe);
 
 module.exports = authRoutes;

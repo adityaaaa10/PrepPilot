@@ -1,13 +1,13 @@
 const userModel = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const tokenBlacklistModel = require('../models/blacklist.model');
 
 /**
 * @name registerUser
 * @description Register a new user 
 * @access Public
  */
-
 async function registerUser(req, res){
     const { username, email, password } = req.body;
 
@@ -52,7 +52,6 @@ async function registerUser(req, res){
 * @description Login a user 
 * @access Public
  */
-
 async function loginUser(req, res) {
   const { email, password } = req.body;
 
@@ -75,7 +74,52 @@ async function loginUser(req, res) {
   res.status(200).json({ message: 'User logged in successfully', user: { id: user._id, username: user.username, email: user.email }, token });
 }
 
+
+/**
+* @name logoutUser
+* @description Logout a user by clearing the token from the cookie and adding it to the blacklist
+* @access Public
+*/
+async function blacklistToken(req, res) {
+  const token = req.cookies.token;
+
+ if(token) {
+    const blacklistedToken = new tokenBlacklistModel({ token });
+    await blacklistedToken.save();
+ }
+ res.clearCookie('token');
+ res.status(200).json({ message: 'User logged out successfully' });
+}
+
+
+/**
+* @name getMe
+* @description Get the current logged in user details
+* @access Public
+*/
+async function getMe(req, res) {
+  try {
+    const user = await userModel.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ 
+      message: 'User details fetched successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
+      }
+     });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  blacklistToken,
+  getMe
 };
