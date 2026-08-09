@@ -5,7 +5,7 @@ const tokenBlacklistModel = require('../models/blacklist.model');
 
 /**
 * @name registerUser
-* @description Register a new user 
+* @description Register a new user , expects username, name and password
 * @access Public
  */
 async function registerUser(req, res){

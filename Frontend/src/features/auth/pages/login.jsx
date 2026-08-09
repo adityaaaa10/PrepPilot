@@ -102,25 +102,6 @@ function Login() {
               personalized interview questions — all in one place, built to
               get you hired faster.
             </p>
-
-            <div className="showcase-panel" aria-hidden="true">
-              <div className="panel-row">
-                <div className="panel-dot dot-green" />
-                <div className="panel-bar" style={{ width: "78%" }} />
-              </div>
-              <div className="panel-row">
-                <div className="panel-dot dot-purple" />
-                <div className="panel-bar" style={{ width: "56%" }} />
-              </div>
-              <div className="panel-row">
-                <div className="panel-dot dot-blue" />
-                <div className="panel-bar" style={{ width: "88%" }} />
-              </div>
-              <div className="panel-footer">
-                <span>Skill Match Score</span>
-                <strong>92%</strong>
-              </div>
-            </div>
           </div>
         </div>
 
