@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router";
+import { Link } from "react-router";
 import { Eye, EyeOff, Loader2, Mail, Lock, Sparkles } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 import "./login.scss";
 
 function Login() {
-  const navigate = useNavigate();
+  const { handleLogin, loading: isSubmitting, error: serverError } = useAuth();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +18,6 @@ function Login() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    if (serverError) setServerError("");
   };
 
   const validate = () => {
@@ -44,35 +42,8 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError("");
-
     if (!validate()) return;
-
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          rememberMe,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.message || "Invalid email or password");
-      }
-
-      navigate("/dashboard");
-    } catch (err) {
-      setServerError(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    handleLogin(formData);
   };
 
   return (

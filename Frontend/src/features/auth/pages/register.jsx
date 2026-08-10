@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router";
+import { Link } from "react-router";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Sparkles } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 import "./register.scss";
 
 function Register() {
-  const navigate = useNavigate();
+  const { handleRegister, loading: isSubmitting, error: serverError } = useAuth();
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -15,8 +16,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,15 +23,14 @@ function Register() {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    if (serverError) setServerError("");
   };
 
   const validate = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
     }
 
     if (!formData.email.trim()) {
@@ -59,35 +57,8 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError("");
-
     if (!validate()) return;
-
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.message || "Registration failed. Please try again.");
-      }
-
-      navigate("/dashboard");
-    } catch (err) {
-      setServerError(err.message || "Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    handleRegister(formData);
   };
 
   return (
@@ -136,24 +107,24 @@ function Register() {
 
             <form onSubmit={handleSubmit} noValidate>
               <div className="form-group">
-                <label htmlFor="fullName">UserName</label>
+                <label htmlFor="username">Username</label>
                 <div className="input-wrapper">
                   <User size={17} className="input-icon" />
                   <input
                     type="text"
-                    id="fullName"
-                    name="fullName"
-                    autoComplete="name"
-                    value={formData.fullName}
+                    id="username"
+                    name="username"
+                    autoComplete="username"
+                    value={formData.username}
                     onChange={handleChange}
-                    aria-invalid={!!errors.fullName}
-                    aria-describedby={errors.fullName ? "fullName-error" : undefined}
-                    placeholder="Enter your user name"
+                    aria-invalid={!!errors.username}
+                    aria-describedby={errors.username ? "username-error" : undefined}
+                    placeholder="Enter your username"
                   />
                 </div>
-                {errors.fullName && (
-                  <span className="field-error" id="fullName-error">
-                    {errors.fullName}
+                {errors.username && (
+                  <span className="field-error" id="username-error">
+                    {errors.username}
                   </span>
                 )}
               </div>
