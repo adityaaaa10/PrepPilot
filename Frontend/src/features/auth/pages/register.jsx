@@ -3,9 +3,11 @@ import { Link } from "react-router";
 import { Eye, EyeOff, Loader2, Mail, Lock, User, Sparkles } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import "./register.scss";
+import { useNavigate } from "react-router";
 
 function Register() {
   const { handleRegister, loading: isSubmitting, error: serverError } = useAuth();
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     username: "",
@@ -55,11 +57,12 @@ function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    handleRegister(formData);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
+  await handleRegister(formData);
+  navigate("/");
+};
 
   return (
     <div className="register-page">

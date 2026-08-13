@@ -3,9 +3,11 @@ import { Link } from "react-router";
 import { Eye, EyeOff, Loader2, Mail, Lock, Sparkles } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import "./login.scss";
+import { useNavigate } from "react-router";
 
 function Login() {
   const { handleLogin, loading: isSubmitting, error: serverError } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +45,8 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    handleLogin(formData);
+    await handleLogin(formData);
+    navigate("/");
   };
 
   return (
