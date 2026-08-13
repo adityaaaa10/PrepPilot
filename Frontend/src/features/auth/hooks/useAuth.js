@@ -1,61 +1,75 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import { register, login, logout } from "../services/auth.api";
+import { AuthContext } from "../auth.context";
+import * as authApi from "../services/auth.api";
+import { useState, useContext } from "react";
 
-export function useAuth(){
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
+export const useAuth = () => {
+  const { user, setUser, loading, setLoading } = useContext(AuthContext);
+  const [error, setError] = useState(null);
 
-    const handleRegister = async (formData) => {
-        const { username, email, password, confirmPassword } = formData;
-
-        if(password !== confirmPassword){
-            setError("Passwords do not match");
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
-        try{
-            const data = await register({ username, email, password });
-            navigate("/dashboard");
-            return data;
-        }catch(err){
-            setError(err.response?.data?.message || "Registration failed");
-        }finally{
-            setLoading(false);
-        }
+  const handleLogin = async (credentials) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await authApi.login(credentials);
+      setUser(data.user);
+      return data;
+    } catch (err) {
+      setError(err?.response?.data?.message || "Login failed");
+      throw err;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleLogin = async (formData) => {
-        const { email, password } = formData;
-
-        setLoading(true);
-        setError(null);
-        try{
-            const data = await login({ email, password });
-            navigate("/dashboard");
-            return data;
-        }catch(err){
-            setError(err.response?.data?.message || "Login failed");
-        }finally{
-            setLoading(false);
-        }
+  const handleRegister = async (credentials) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await authApi.register(credentials);
+      setUser(data.user);
+      return data;
+    } catch (err) {
+      setError(err?.response?.data?.message || "Registration failed");
+      throw err;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleLogout = async () => {
-        setLoading(true);
-        setError(null);
-        try{
-            await logout();
-            navigate("/login");
-        }catch(err){
-            setError(err.response?.data?.message || "Logout failed");
-        }finally{
-            setLoading(false);
-        }
+  const handleLogout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await authApi.logout();
+      setUser(null);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Logout failed");
+      throw err;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return { handleRegister, handleLogin, handleLogout, loading, error };
-}
+  const fetchMe = async () => {
+    setLoading(true);
+    try {
+      const data = await authApi.getMe();
+      setUser(data?.user ?? null);
+      return data;
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    user,
+    loading,
+    error,
+    handleLogin,
+    handleRegister,
+    handleLogout,
+    fetchMe,
+  };
+};

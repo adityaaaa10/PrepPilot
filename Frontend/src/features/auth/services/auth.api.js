@@ -44,3 +44,16 @@ export async function logout(){
         throw err
     }
 }
+
+export async function getMe(){
+    try{
+        const response = await axios.post(`${BASE_URL}/get-me`, {}, {
+            withCredentials: true
+        })
+        return response.data
+
+    }catch(err){
+        console.log(err)
+    }
+}
+
