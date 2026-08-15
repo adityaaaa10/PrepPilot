@@ -1,0 +1,690 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap");
+
+// ---------------------------------------------------------------------------
+// Tokens
+// ---------------------------------------------------------------------------
+$bg-page: #0a1220;
+$bg-surface: #101c30;
+$bg-surface-hover: #16233b;
+$bg-card: #0e1a2d;
+$bg-input: #0c1729;
+
+$border: rgba(255, 255, 255, 0.08);
+$border-hover: rgba(255, 255, 255, 0.15);
+$border-card: rgba(255, 255, 255, 0.07);
+
+$accent: #4c8dff;
+$accent-hover: #6ba0ff;
+$accent-soft: rgba(76, 141, 255, 0.35);
+$accent-muted: #7fa4dd;
+
+$text-primary: #f2f4f8;
+$text-secondary: #97a2b8;
+$text-muted: #5c6780;
+
+$font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+$font-mono: "IBM Plex Mono", monospace;
+
+$radius-lg: 20px;
+$radius-md: 11px;
+$radius-sm: 8px;
+$content-width: 980px;
+$card-width: 960px;
+
+// ---------------------------------------------------------------------------
+// Base
+// ---------------------------------------------------------------------------
+.home {
+  min-height: 100vh;
+  position: relative;
+  background: $bg-page;
+  color: $text-primary;
+  font-family: $font-body;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+
+  // Extremely subtle depth: a faint radial glow plus a barely-visible grid.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      880px 480px at 50% -12%,
+      rgba(76, 141, 255, 0.07),
+      transparent 62%
+    );
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(720px 420px at 50% 0%, black, transparent 75%);
+    pointer-events: none;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+.home-nav {
+  position: relative;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+  z-index: 1;
+
+  &__inner {
+    max-width: $content-width;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  &__identity {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.015em;
+  }
+
+  &__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: rgba(76, 141, 255, 0.14);
+    color: $accent;
+    font-size: 13px;
+  }
+
+  &__tagline {
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: $text-muted;
+    max-width: 320px;
+  }
+
+  &__right {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__username {
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-primary;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__divider {
+    width: 1px;
+    height: 14px;
+    background: $border-hover;
+  }
+
+  &__logout {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 4px 2px;
+    font-family: $font-body;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: $accent-muted;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      color: $text-primary;
+      border-color: $border-hover;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $accent-soft;
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+.home-main {
+  position: relative;
+  flex: 1;
+  padding: 36px 24px 28px;
+  display: flex;
+  z-index: 1;
+
+  &__inner {
+    max-width: $content-width;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Card surface
+// ---------------------------------------------------------------------------
+.report-card {
+  width: 100%;
+  max-width: $card-width;
+  background: $bg-card;
+  border: 1px solid $border-card;
+  border-radius: $radius-lg;
+  padding: 26px 30px 28px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 20px 45px -28px rgba(0, 0, 0, 0.6);
+}
+
+.home-intro {
+  margin-bottom: 18px;
+
+  &__eyebrow {
+    display: block;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: $accent-muted;
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: $text-secondary;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form — two-panel grid
+// ---------------------------------------------------------------------------
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 22px;
+    align-items: stretch;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid $border;
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: $text-muted;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+
+    h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: $text-primary;
+      letter-spacing: 0.005em;
+    }
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(76, 141, 255, 0.13);
+    color: $accent;
+    font-size: 11.5px;
+    flex-shrink: 0;
+  }
+
+  &__textarea {
+    flex: 1;
+    width: 100%;
+    background: $bg-input;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    padding: 13px 14px;
+    color: $text-primary;
+    font-family: $font-body;
+    font-size: 13.5px;
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 210px;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
+    &:hover {
+      border-color: $border-hover;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $accent-soft;
+      background: $bg-surface-hover;
+      box-shadow: 0 0 0 3px rgba(76, 141, 255, 0.1);
+    }
+  }
+
+  &__textarea--compact {
+    min-height: 88px;
+  }
+
+  &__counter {
+    align-self: flex-end;
+    margin-top: 6px;
+    font-size: 11px;
+    color: $text-muted;
+  }
+}
+
+.panel--profile {
+  gap: 14px;
+
+  .field:last-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    textarea {
+      flex: 1;
+    }
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-primary;
+    letter-spacing: 0.01em;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Resume uploader
+// ---------------------------------------------------------------------------
+.file-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 11px 14px;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  background: $bg-input;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    border-color: $border-hover;
+    background: $bg-surface-hover;
+  }
+
+  input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-sm;
+    background: rgba(76, 141, 255, 0.12);
+    color: $accent;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__text {
+    font-size: 13.5px;
+    color: $text-secondary;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__text--filled {
+    color: $text-primary;
+    font-weight: 500;
+  }
+
+  &__hint {
+    font-size: 11px;
+    color: $text-muted;
+  }
+
+  &__action {
+    font-size: 12px;
+    font-weight: 600;
+    color: $accent;
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(76, 141, 255, 0.1);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Feedback + button
+// ---------------------------------------------------------------------------
+.form-error {
+  font-size: 12.5px;
+  color: #e4795c;
+  margin: -6px 0 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-md;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease,
+    transform 0.1s ease, box-shadow 0.15s ease;
+
+  &--primary {
+    height: 46px;
+    padding: 0 30px;
+    flex-shrink: 0;
+    background: $accent;
+    color: #ffffff;
+    box-shadow: 0 8px 20px -10px rgba(76, 141, 255, 0.55);
+
+    &:hover:not(:disabled) {
+      background: $accent-hover;
+      box-shadow: 0 10px 24px -10px rgba(76, 141, 255, 0.65);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px -8px rgba(76, 141, 255, 0.5);
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+
+  &--ghost {
+    width: 100%;
+    height: 48px;
+    background: transparent;
+    color: $text-secondary;
+    border-color: $border;
+    margin-top: 24px;
+
+    &:hover {
+      border-color: $border-hover;
+      color: $text-primary;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Report result
+// ---------------------------------------------------------------------------
+.result-block {
+  margin-bottom: 24px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: $text-primary;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.result-block ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  background: $bg-surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+}
+
+.skill-name {
+  font-size: 13.5px;
+  color: $text-primary;
+}
+
+.severity {
+  font-family: $font-mono;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 8px;
+  border-radius: 5px;
+  margin-left: 10px;
+
+  &--low {
+    color: #6fcf97;
+    background: rgba(111, 207, 151, 0.1);
+  }
+
+  &--medium {
+    color: #dcb35c;
+    background: rgba(220, 179, 92, 0.1);
+  }
+
+  &--high {
+    color: #e4795c;
+    background: rgba(228, 121, 92, 0.1);
+  }
+}
+
+.question-card {
+  padding: 14px 16px;
+  background: $bg-surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__q {
+    font-size: 13.5px;
+    color: $text-primary;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
+
+  &__a {
+    font-size: 13px;
+    color: $text-secondary;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.plan-day {
+  display: flex;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__num {
+    font-family: $font-mono;
+    font-size: 11px;
+    color: $accent;
+    flex-shrink: 0;
+    width: 52px;
+    padding-top: 1px;
+  }
+
+  &__focus {
+    font-size: 13.5px;
+    font-weight: 500;
+    margin: 0 0 6px;
+  }
+
+  ul {
+    list-style: disc;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    li {
+      font-size: 12.5px;
+      color: $text-secondary;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Small screens — stack columns, allow natural scrolling
+// ---------------------------------------------------------------------------
+@media (max-width: 860px) {
+  .report-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel__textarea {
+    min-height: 160px;
+  }
+
+  .panel--profile .field:last-child textarea {
+    min-height: 90px;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-nav__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .home-nav__logout {
+    align-self: flex-end;
+    margin-top: -30px;
+  }
+
+  .home-main {
+    padding: 24px 16px 32px;
+  }
+
+  .report-card {
+    padding: 22px 18px 26px;
+  }
+
+  .report-form__footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn--primary {
+    width: 100%;
+  }
+}
