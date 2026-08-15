@@ -29,4 +29,16 @@ interviewRouter.use((err, req, res, next) => {
   next(err);
 });
 
+interviewRouter.get(
+  "/",
+  authMiddleware.authenticateToken,
+  interviewController.getAllReports
+);
+
+interviewRouter.get(
+  "/:id",
+  authMiddleware.authenticateToken,
+  interviewController.getInterviewReport
+);
+
 module.exports = interviewRouter;
