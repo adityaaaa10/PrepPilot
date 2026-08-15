@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router";
+import { useInterview } from "../hooks/use.interview.js";
 import axios from "axios";
 import "./home.scss";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export default function Home() {
+  const navigate = useNavigate();
+  const { generateReport, getAllReports, reports, loading, error, setError } = useInterview();
   const [resume, setResume] = useState(null);
   const [resumeName, setResumeName] = useState("");
   const [selfDescription, setSelfDescription] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [report, setReport] = useState(null);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -35,6 +36,13 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    getAllReports().catch(() => {
+      // silent — recent reports list just stays empty on failure
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleFileChange(e) {
@@ -69,18 +77,10 @@ export default function Home() {
     formData.append("jobDescription", jobDescription);
 
     try {
-      setLoading(true);
-      const res = await axios.post(`${API_BASE}/api/interview`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setReport(res.data.report);
+      const report = await generateReport(formData);
+      navigate(`/interview/${report._id}`);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Something went wrong. Please try again."
-      );
-    } finally {
-      setLoading(false);
+      // error is already set inside generateReport
     }
   }
 
@@ -127,177 +127,122 @@ export default function Home() {
       <main className="home-main">
         <div className="home-main__inner">
           <div className="report-card">
-          {!report ? (
-            <>
-              <div className="home-intro">
-                <span className="home-intro__eyebrow">Interview preparation</span>
-                <h1>New interview report</h1>
-                <p>Upload your resume and add the role details to get started.</p>
-              </div>
+            <div className="home-intro">
+              <span className="home-intro__eyebrow">Interview preparation</span>
+              <h1>New interview report</h1>
+              <p>Upload your resume and add the role details to get started.</p>
+            </div>
 
-              <form className="report-form" onSubmit={handleSubmit}>
-                <div className="report-form__grid">
-                  <div className="panel panel--job">
-                    <div className="panel__header">
-                      <span className="panel__icon" aria-hidden="true">
-                        ▤
-                      </span>
-                      <h2>Target Job Description</h2>
-                    </div>
-                    <textarea
-                      id="jobDescription"
-                      className="panel__textarea"
-                      maxLength={5000}
-                      placeholder="Paste the full job description here — e.g. role, responsibilities, and required skills."
-                      value={jobDescription}
-                      onChange={(e) => setJobDescription(e.target.value)}
-                    />
-                    <span className="panel__counter">
-                      {jobDescription.length} / 5000 chars
+            <form className="report-form" onSubmit={handleSubmit}>
+              <div className="report-form__grid">
+                <div className="panel panel--job">
+                  <div className="panel__header">
+                    <span className="panel__icon" aria-hidden="true">
+                      ▤
                     </span>
+                    <h2>Target Job Description</h2>
                   </div>
-
-                  <div className="panel panel--profile">
-                    <div className="panel__header">
-                      <span className="panel__icon" aria-hidden="true">
-                        ◎
-                      </span>
-                      <h2>Your Profile</h2>
-                    </div>
-
-                    <div className="field">
-                      <label htmlFor="resume">Resume (PDF)</label>
-                      <label htmlFor="resume" className="file-drop">
-                        <input
-                          id="resume"
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handleFileChange}
-                        />
-                        <span className="file-drop__icon" aria-hidden="true">
-                          ↑
-                        </span>
-                        <span className="file-drop__body">
-                          <span
-                            className={`file-drop__text${
-                              resumeName ? " file-drop__text--filled" : ""
-                            }`}
-                          >
-                            {resumeName || "Choose a PDF file"}
-                          </span>
-                          {!resumeName && (
-                            <span className="file-drop__hint">
-                              PDF • Max supported format
-                            </span>
-                          )}
-                        </span>
-                        <span className="file-drop__action">Browse</span>
-                      </label>
-                    </div>
-
-                    <div className="field">
-                      <label htmlFor="selfDescription">About you</label>
-                      <textarea
-                        id="selfDescription"
-                        className="panel__textarea panel__textarea--compact"
-                        placeholder="Briefly describe your experience, key skills, and what you're looking for."
-                        value={selfDescription}
-                        onChange={(e) => setSelfDescription(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {error && <p className="form-error">{error}</p>}
-
-                <div className="report-form__footer">
-                  <span className="report-form__hint">
-                    AI-powered interview preparation
+                  <textarea
+                    id="jobDescription"
+                    className="panel__textarea"
+                    maxLength={5000}
+                    placeholder="Paste the full job description here — e.g. role, responsibilities, and required skills."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                  />
+                  <span className="panel__counter">
+                    {jobDescription.length} / 5000 chars
                   </span>
-                  <button
-                    type="submit"
-                    className="btn btn--primary"
-                    disabled={loading}
-                  >
-                    {loading ? "Analyzing…" : "Generate Report"}
-                  </button>
                 </div>
-              </form>
-            </>
-          ) : (
-            <div className="report-result">
-              <div className="home-intro">
-                <span className="home-intro__eyebrow">Interview preparation</span>
-                <h1>Your report</h1>
-                <p>Match score: {report.matchScore}/100</p>
+
+                <div className="panel panel--profile">
+                  <div className="panel__header">
+                    <span className="panel__icon" aria-hidden="true">
+                      ◎
+                    </span>
+                    <h2>Your Profile</h2>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="resume">Resume (PDF)</label>
+                    <label htmlFor="resume" className="file-drop">
+                      <input
+                        id="resume"
+                        type="file"
+                        accept="application/pdf"
+                        onChange={handleFileChange}
+                      />
+                      <span className="file-drop__icon" aria-hidden="true">
+                        ↑
+                      </span>
+                      <span className="file-drop__body">
+                        <span
+                          className={`file-drop__text${
+                            resumeName ? " file-drop__text--filled" : ""
+                          }`}
+                        >
+                          {resumeName || "Choose a PDF file"}
+                        </span>
+                        {!resumeName && (
+                          <span className="file-drop__hint">
+                            PDF • Max supported format
+                          </span>
+                        )}
+                      </span>
+                      <span className="file-drop__action">Browse</span>
+                    </label>
+                  </div>
+
+                  <div className="field">
+                    <label htmlFor="selfDescription">About you</label>
+                    <textarea
+                      id="selfDescription"
+                      className="panel__textarea panel__textarea--compact"
+                      placeholder="Briefly describe your experience, key skills, and what you're looking for."
+                      value={selfDescription}
+                      onChange={(e) => setSelfDescription(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <section className="result-block">
-                <h2>Skill gaps</h2>
-                <ul>
-                  {report.skillGaps?.map((s, i) => (
-                    <li key={i}>
-                      <span className="skill-name">{s.skill}</span>
-                      <span className={`severity severity--${s.severity}`}>
-                        {s.severity}
-                      </span>
+              {error && <p className="form-error">{error}</p>}
+
+              <div className="report-form__footer">
+                <span className="report-form__hint">
+                  AI-powered interview preparation
+                </span>
+                <button
+                  type="submit"
+                  className="btn btn--primary"
+                  disabled={loading}
+                >
+                  {loading ? "Analyzing…" : "Generate Report"}
+                </button>
+              </div>
+            </form>
+
+            {reports.length > 0 && (
+              <div className="recent-reports">
+                <h2>Recent Reports</h2>
+                <ul className="recent-reports__list">
+                  {reports.map((r) => (
+                    <li key={r._id} className="recent-reports__item">
+                      <Link to={`/interview/${r._id}`} className="recent-reports__link">
+                        <span className="recent-reports__score">{r.matchScore}%</span>
+                        <span className="recent-reports__job">
+                          {r.jobDesc?.slice(0, 80) || "Untitled role"}
+                          {r.jobDesc?.length > 80 ? "…" : ""}
+                        </span>
+                        <span className="recent-reports__date">
+                          {new Date(r.createdAt).toLocaleDateString()}
+                        </span>
+                      </Link>
                     </li>
                   ))}
                 </ul>
-              </section>
-
-              <section className="result-block">
-                <h2>Technical questions</h2>
-                {report.technicalQuestions?.map((q, i) => (
-                  <div className="question-card" key={i}>
-                    <p className="question-card__q">{q.question}</p>
-                    <p className="question-card__a">{q.answer}</p>
-                  </div>
-                ))}
-              </section>
-
-              <section className="result-block">
-                <h2>Behavioral questions</h2>
-                {report.behavioralQuestions?.map((q, i) => (
-                  <div className="question-card" key={i}>
-                    <p className="question-card__q">{q.question}</p>
-                    <p className="question-card__a">{q.answer}</p>
-                  </div>
-                ))}
-              </section>
-
-              <section className="result-block">
-                <h2>Preparation plan</h2>
-                {report.preparationPlan?.map((d, i) => (
-                  <div className="plan-day" key={i}>
-                    <span className="plan-day__num">Day {d.day}</span>
-                    <div>
-                      <p className="plan-day__focus">{d.focus}</p>
-                      <ul>
-                        {d.tasks?.map((t, j) => (
-                          <li key={j}>{t}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </section>
-
-              <button
-                type="button"
-                className="btn btn--ghost"
-                onClick={() => {
-                  setReport(null);
-                  setResume(null);
-                  setResumeName("");
-                  setSelfDescription("");
-                  setJobDescription("");
-                }}
-              >
-                Generate another report
-              </button>
-            </div>
-          )}
+              </div>
+            )}
           </div>
         </div>
       </main>
