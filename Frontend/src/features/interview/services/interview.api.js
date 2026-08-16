@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/interview";
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api/interview`;
 
 export async function getInterviewReport(id) {
   try {
