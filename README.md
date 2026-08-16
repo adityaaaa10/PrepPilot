@@ -1,75 +1,43 @@
-# PrepPilot 🚀
- 
-An AI-powered interview preparation platform that helps you upload your resume, analyze job descriptions, identify skill gaps, and generate tailored interview questions and ATS-optimized resumes — all in one place.
- 
+# PrepPilot
+
+AI-powered interview preparation platform. Upload your resume and a target job description, and PrepPilot analyzes skill gaps, generates tailored interview questions, and produces a personalized prep roadmap.
+
+**Live app:** [prep-pilot-rosy.vercel.app](https://prep-pilot-rosy.vercel.app)
+
+## Screenshots
+
+<!-- Add screenshots below. Example format: -->
+<!-- ![Login Page](./screenshots/login.png) -->
+
+| Login | Interview Report |
+|---|---|
+| ![Login](./screenshots/login.png) | ![Report](./screenshots/report.png) |
+
+<!-- Add more rows/images as needed -->
+
 ## Features
- 
-- 🔐 **Secure Authentication** — JWT-based auth with cookie sessions and token blacklisting on logout
-- 📄 **Resume Upload & Parsing** — extract structured data from uploaded resumes
-- 🎯 **Job Description Analysis** — compare your profile against a target JD
-- 📊 **Skill Gap Detection** — AI-driven analysis of what's missing between your resume and the role
-- 🤖 **AI-Generated Interview Questions** — practice with questions tailored to the JD and your background (powered by Gemini API)
-- 📑 **ATS-Optimized Resume Generation** — generate a polished, ATS-friendly resume PDF (via Puppeteer)
+
+- **Resume & JD Analysis** — Upload a resume (PDF) and paste a job description to get a tailored match score
+- **Skill Gap Detection** — Identifies missing or weak skills relative to the target role
+- **AI-Generated Interview Questions** — Technical and behavioral questions generated via the Gemini API, based on your actual resume content and the JD
+- **Interview Report Dashboard** — Sidebar-navigable report with Technical Questions, Behavioral Questions, and a Roadmap section
+- **Secure Auth** — JWT-based authentication with HTTP-only cookies and token blacklisting on logout
+
 ## Tech Stack
- 
+
 **Frontend**
-- React.js (Vite)
+- React (Vite)
+- SCSS
+
 **Backend**
-- Node.js
-- Express.js
+- Node.js + Express
 - MongoDB (Mongoose)
-**Auth**
-- JWT
-- Token blacklisting (logout invalidation)
-**AI / Other**
-- Gemini API — resume parsing, skill gap analysis, question generation
-- Puppeteer — dynamic PDF generation
+- JWT authentication with cookie-based sessions and token blacklisting
+- Google Gemini API for AI-generated content
 
+**Deployment**
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
 
- 
-### Prerequisites
-- Node.js
-- MongoDB Atlas account (or local MongoDB instance)
-- Gemini API key
-### Installation
- 
-```bash
-git clone https://github.com/adityaaaa10/PrepPilot.git
-cd PrepPilot
-npm install
-```
- 
-### Environment Variables
- 
-Create a `.env` file in the root directory:
- 
-```
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
-```
- 
-### Run the server
- 
-```bash
-npm start
-```
- 
-The API will be available at `http://localhost:3000`.
- 
-## API Endpoints (so far)
- 
-| Method | Endpoint             | Description                  |
-|--------|-----------------------|-------------------------------|
-| POST   | `/api/auth/register`  | Register a new user           |
-| POST   | `/api/auth/login`     | Log in an existing user       |
-| POST   | `/api/auth/logout`    | Log out & blacklist token     |
-| GET    | `/api/auth/me`        | Get current logged-in user    |
- 
-*(More endpoints for resume upload, JD analysis, and AI features to be added as development continues.)*
- 
-
-## License
- 
-This project is for personal learning purposes.
+## Project Structure
