@@ -1,6 +1,6 @@
 const { PDFParse } = require("pdf-parse");
 const { generateInterviewReport } = require("../services/ai.service");
-const InterviewReport = require("../models/interviewReport.model");
+const InterviewReport = require('../models/InterviewReport.model')
 
 async function createInterviewReport(req, res) {
   try {
