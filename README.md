@@ -6,8 +6,7 @@ AI-powered interview preparation platform. Upload your resume and a target job d
 
 ## Screenshots
 
-<!-- Add screenshots below. Example format: -->
-<!-- ![Login Page](./screenshots/login.png) -->
+<img width="1865" height="994" alt="image" src="https://github.com/user-attachments/assets/c2226b18-bffd-4ba9-bea4-ec15dda43693" />
 
 | Login | Interview Report |
 |---|---|
