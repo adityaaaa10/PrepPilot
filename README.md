@@ -39,19 +39,20 @@ AI-powered interview preparation platform. Upload your resume and a target job d
 
 ## Project Structure
 
+```
 PrepPilot/
-├── Frontend/ # React + Vite app
-│ └── src/
-│ └── features/
-│ ├── auth/
-│ └── interview/
-└── Backend/ # Express API
-└── src/
-├── controllers/
-├── models/
-├── Middlewares/
-└── routes/
-
+├── Frontend/          # React + Vite app
+│   └── src/
+│       └── features/
+│           ├── auth/
+│           └── interview/
+└── Backend/           # Express API
+    └── src/
+        ├── controllers/
+        ├── models/
+        ├── Middlewares/
+        └── routes/
+```
 
 ## Getting Started
 
