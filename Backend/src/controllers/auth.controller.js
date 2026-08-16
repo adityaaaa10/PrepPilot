@@ -36,7 +36,11 @@ async function registerUser(req, res){
   const token = jwt.sign({ id: newUser._id, 
     username: newUser.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
   
-  res.cookie('token', token)
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
   res.status(201).json({ message: 'User registered successfully', 
     user: 
     { id: newUser._id, 
@@ -70,7 +74,11 @@ async function loginUser(req, res) {
   }
 
   const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token);
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
   res.status(200).json({ message: 'User logged in successfully', user: { id: user._id, username: user.username, email: user.email }, token });
 }
 
@@ -87,7 +95,11 @@ async function blacklistToken(req, res) {
     const blacklistedToken = new tokenBlacklistModel({ token });
     await blacklistedToken.save();
  }
- res.clearCookie('token');
+ res.clearCookie('token', {
+   httpOnly: true,
+   secure: process.env.NODE_ENV === 'production',
+   sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+ });
  res.status(200).json({ message: 'User logged out successfully' });
 }
 
