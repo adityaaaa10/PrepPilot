@@ -22,7 +22,7 @@ authRoutes.post('/login', userController.loginUser);
  * @description clear the token from the cookie and add it to the blacklist
  * @access Public
  */
-authRoutes.get('/logout', userController.blacklistToken);
+authRoutes.post('/logout', userController.blacklistToken);
 
 
 /**
